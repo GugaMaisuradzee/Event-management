@@ -23,7 +23,6 @@ class EventRequest extends FormRequest
     {
         return [
             'name' => ['required','string','max:255'],
-            'user_id' => ['integer'],
             'description' => ['nullable','string'],
             'start_date' => ['required','nullable','date'],
             'end_date' => ['required','date','after:start_time']

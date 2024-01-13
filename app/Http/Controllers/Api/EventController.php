@@ -15,6 +15,11 @@ use Illuminate\Http\Request;
 class EventController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except(['index','show']);
+    }
+
 
     /**
      * Display a listing of the resource.
@@ -31,11 +36,19 @@ class EventController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(EventRequest $request)
+    public function store(Request $request)
     {
-        $event = Event::query()->create( $request->validated());
+        $event = Event::create([
+            ...$request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after:start_time'
+            ]),
+            'user_id' => $request->user()->id
+        ]);
 
-        return $event;
+        return new EventResource($event);
     }
 
     /**
